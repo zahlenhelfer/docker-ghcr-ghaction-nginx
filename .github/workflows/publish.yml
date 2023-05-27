@@ -38,5 +38,5 @@ jobs:
 
     - name: Build the hello-world Docker image
       run: |
-        docker build . --tag ${{ steps.meta.outputs.tags }}
-        docker push ${{ steps.meta.outputs.tags }}
+        docker build . --tag ${{ github.ref_type == 'tag' }}
+        docker push ${{ github.ref_type == 'tag' }}
