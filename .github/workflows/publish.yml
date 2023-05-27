@@ -20,7 +20,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: ghcr.io/zahlenhelfer/hello-world
+        images: ghcr.io/zahlenhelfer/docker-ghcr-ghaction-nginx
         flavor: latest=true
         tags: |
           type=ref,event=branch
