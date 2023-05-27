@@ -35,3 +35,8 @@ jobs:
         push: ${{ github.ref_type == 'tag' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Build the hello-world Docker image
+      run: |
+        docker build . --tag ${{ steps.meta.outputs.tags }}
+        docker push ${{ github.ref_type == 'tag' }}
