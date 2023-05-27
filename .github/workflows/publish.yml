@@ -17,24 +17,21 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Docker metadata
-      id: metadata
+      id: meta
       uses: docker/metadata-action@v4
       with:
-        images: |
-          name/app
+        images: ghcr.io/zahlenhelfer/hello-world
+        flavor: latest=true
         tags: |
           type=ref,event=branch
           type=ref,event=pr
           type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
+    - name: Build and push
+      uses: docker/build-push-action@v3
       with:
         context: .
-        push: ${{ 
-          github.event.base_ref =='refs/heads/main' && 
-          github.ref_type == 'tag' && 
-          !startsWith(github.ref, 'refs/tags/v0.') }}
-        tags: ${{ steps.metadata.outputs.tags }}
-        labels: ${{ steps.metadata.outputs.labels }}
+        file: docker/dockerfile/hello-world/Dockerfile
+        push: ${{ github.ref_type == 'tag' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
