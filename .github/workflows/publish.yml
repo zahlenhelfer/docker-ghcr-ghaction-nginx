@@ -19,12 +19,13 @@ jobs:
     - name: Docker metadata
       id: metadata
       uses: docker/metadata-action@v4
-      with:
-        images: name/app
+        images: |
+          name/app
         tags: |
+          type=ref,event=branch
+          type=ref,event=pr
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
-          type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
 
     - name: Build and push
       uses: docker/build-push-action@v4
