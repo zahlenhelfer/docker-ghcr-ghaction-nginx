@@ -16,8 +16,18 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Docker metadata
+      id: metadata
+      uses: docker/metadata-action@v3
+      with:
+        images: ${{ env.IMG_NAME }}
+        tags: |
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
+
     - name: Build the hello-world Docker image
       run: |
-        docker build . --tag ghcr.io/zahlenhelfer/hello-world:latest
-        docker run ghcr.io/zahlenhelfer/zh-custom-nginx:latest
-        docker push ghcr.io/zahlenhelfer/zh-custom-nginx:latest
+        docker build . --tag ${{ env.IMG_NAME }}:${{ steps.metadata.outputs.tags }}
+        docker run ghcr.io/zahlenhelfer/zh-custom-nginx:${{ steps.metadata.outputs.tags }}
+        docker push ghcr.io/zahlenhelfer/zh-custom-nginx:${{ steps.metadata.outputs.tags }}
